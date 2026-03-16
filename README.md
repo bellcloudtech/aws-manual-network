@@ -280,7 +280,7 @@ The default Apache test page confirmed the server was reachable from the interne
 
 
 
-!\[EC2 Instance Launch](images/06-ec2-instance-launched.png)
+!\[EC2 Instance Launch](images/instance-launched.png)
 
 
 
@@ -288,7 +288,7 @@ The default Apache test page confirmed the server was reachable from the interne
 
 
 
-!\[EC2 Instance Running](images/07-ec2-instance-running.png)
+!\[EC2 Instance Running](images/instance-running.png)
 
 
 
@@ -296,7 +296,7 @@ The default Apache test page confirmed the server was reachable from the interne
 
 
 
-!\[Web Server Running](images/08-web-server-running.png)
+!\[Web Server Running](images/web-server-running.png)
 
 
 
