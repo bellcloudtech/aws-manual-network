@@ -268,43 +268,43 @@ The default Apache test page confirmed the server was reachable from the interne
 
 
 
-\---
+---
 
 
 
-\## Screenshots
+## Screenshots
 
 
 
-\### EC2 Instance Launched
+### EC2 Instance Launched
 
 
 
-!\[EC2 Instance Launch](images/instance-launched.png)
+![EC2 Instance Launch](images/instance-launched.png)
 
 
 
-\### Instance Running
+### Instance Running
 
 
 
-!\[EC2 Instance Running](images/instance-running.png)
+![EC2 Instance Running](images/instance-running.png)
 
 
 
-\### Web Server Running
+### Web Server Running
 
 
 
-!\[Web Server Running](images/web-server-running.png)
+![Web Server Running](images/web-server-running.png)
 
 
 
-\---
+---
 
 
 
-\## Outcome
+## Outcome
 
 
 
