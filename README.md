@@ -2,13 +2,7 @@
 
 
 
-\## Overview
-
-This project demonstrates building AWS network infrastructure manually without automation tools. The goal was to understand how the core networking components of AWS interact to allow a public web server to run inside a Virtual Private Cloud (VPC).
-
-
-
-All infrastructure components were created manually in the AWS console to better understand how networking works within AWS.
+This project demonstrates how to manually deploy a public web server in AWS using core networking components. The infrastructure was created step-by-step through the AWS Console to understand how networking, security groups, and EC2 instances interact.
 
 
 
@@ -16,33 +10,49 @@ All infrastructure components were created manually in the AWS console to better
 
 
 
-\## Architecture Components
+\## Architecture Overview
 
 
 
-The following AWS services were used:
+The environment includes:
+
+
+
+• A custom VPC  
+
+• A public subnet  
+
+• An internet gateway  
+
+• A security group allowing HTTP and SSH  
+
+• An EC2 instance running Amazon Linux  
+
+• Apache web server installed and serving a test page  
+
+
+
+This setup allows internet users to reach the EC2 instance through its public IP address.
+
+
+
+\---
+
+
+
+\## AWS Services Used
 
 
 
 \- Amazon VPC (Virtual Private Cloud)
 
-\- Public Subnet
-
-\- Private Subnet
+\- Amazon EC2 (Elastic Compute Cloud)
 
 \- Internet Gateway
 
-\- Route Table
+\- Security Groups
 
-\- Security Group
-
-\- EC2 Instance
-
-\- Apache Web Server
-
-
-
-The EC2 instance was deployed inside a public subnet with routing configured through an Internet Gateway to allow internet access.
+\- Amazon Linux 2023 AMI
 
 
 
@@ -50,45 +60,27 @@ The EC2 instance was deployed inside a public subnet with routing configured thr
 
 
 
-\## Network Design
+\## Deployment Steps
 
 
 
-\### VPC Configuration
-
-CIDR Block: 10.0.0.0/16
+\### 1. Create VPC
 
 
 
-\### Subnet Configuration
-
-Public Subnet: 10.0.1.0/24  
-
-Private Subnet: 10.0.2.0/24
+A custom VPC was created with the CIDR block:
 
 
 
-The public subnet allows internet access through the Internet Gateway while the private subnet is designed for internal resources.
+```
+
+10.0.0.0/16
+
+```
 
 
 
-\---
-
-
-
-\## Route Table Configuration
-
-
-
-Route Table Entry:
-
-
-
-0.0.0.0/0 → Internet Gateway
-
-
-
-This route allows instances inside the public subnet to communicate with the internet.
+This network provides private addressing for resources within the environment.
 
 
 
@@ -96,55 +88,23 @@ This route allows instances inside the public subnet to communicate with the int
 
 
 
-\## Security Group Configuration
+\### 2. Create Public Subnet
 
 
 
-Inbound Security Group Rules
+A public subnet was created inside the VPC:
 
 
 
-| Type | Protocol | Port | Source |
+```
 
-|-----|-----|-----|-----|
+10.0.1.0/24
 
-| SSH | TCP | 22 | My IP |
-
-| HTTP | TCP | 80 | 0.0.0.0/0 |
+```
 
 
 
-These rules allow SSH access for administration and HTTP access so the web server can be accessed publicly.
-
-
-
-\---
-
-
-
-\## EC2 Instance Configuration
-
-
-
-Instance Name: BellHVAC-Web-Server  
-
-Instance Type: t2.micro  
-
-AMI: Amazon Linux 2023  
-
-Subnet: BellHVAC-Public-Subnet
-
-
-
-The instance was launched with an SSH key pair for secure access.
-
-
-
-Public IP Address used for testing:
-
-
-
-http://100.52.215.167
+The subnet allows instances to receive public IP addresses.
 
 
 
@@ -152,27 +112,135 @@ http://100.52.215.167
 
 
 
-\## Installing the Web Server
+\### 3. Attach Internet Gateway
 
 
 
-After connecting to the instance, Apache was installed and configured.
+An Internet Gateway was attached to the VPC so resources in the subnet could reach the internet.
 
 
 
-Commands executed on the EC2 instance:
+Route table configuration allowed outbound internet traffic.
 
 
 
-sudo dnf update -y  
+\---
 
-sudo dnf install httpd -y  
 
-sudo systemctl start httpd  
 
-sudo systemctl enable httpd  
+\### 4. Configure Security Group
 
-echo "BellHVAC Web Server Running" | sudo tee /var/www/html/index.html
+
+
+A security group was created to control traffic to the instance.
+
+
+
+Inbound Rules:
+
+
+
+SSH  
+
+```
+
+Port: 22
+
+Source: My IP
+
+```
+
+
+
+HTTP  
+
+```
+
+Port: 80
+
+Source: 0.0.0.0/0
+
+```
+
+
+
+This allows SSH administration and public web access.
+
+
+
+\---
+
+
+
+\### 5. Launch EC2 Instance
+
+
+
+Instance configuration:
+
+
+
+Instance Type
+
+```
+
+t2.micro
+
+```
+
+
+
+AMI
+
+```
+
+Amazon Linux 2023
+
+```
+
+
+
+Key Pair
+
+```
+
+BellHVAC-Key.pem
+
+```
+
+
+
+The instance was deployed into the public subnet.
+
+
+
+\---
+
+
+
+\### 6. Install Apache Web Server
+
+
+
+After connecting to the instance, Apache was installed and started.
+
+
+
+Commands executed on the server:
+
+
+
+```
+
+sudo yum update -y
+
+sudo yum install httpd -y
+
+sudo systemctl start httpd
+
+sudo systemctl enable httpd
+
+```
 
 
 
@@ -184,15 +252,19 @@ echo "BellHVAC Web Server Running" | sudo tee /var/www/html/index.html
 
 
 
-After installation, the web server was verified by opening the instance's public IP address in a web browser:
+The web server was verified by opening the instance's public IP address in a browser:
 
 
+
+```
 
 http://100.52.215.167
 
+```
 
 
-The browser successfully returned the web page confirming the server was reachable through the internet.
+
+The default Apache test page confirmed the server was reachable from the internet.
 
 
 
@@ -206,17 +278,23 @@ The browser successfully returned the web page confirming the server was reachab
 
 \### EC2 Instance Launched
 
+
+
 !\[EC2 Instance Launch](images/06-ec2-instance-launched.png)
 
 
 
 \### Instance Running
 
+
+
 !\[EC2 Instance Running](images/07-ec2-instance-running.png)
 
 
 
 \### Web Server Running
+
+
 
 !\[Web Server Running](images/08-web-server-running.png)
 
@@ -238,21 +316,35 @@ Skills demonstrated:
 
 
 
-\- VPC design and configuration
+\- VPC networking fundamentals
 
-\- Subnet creation
+\- Subnet design
 
-\- Internet Gateway configuration
+\- Internet gateway configuration
 
-\- Route table management
-
-\- Security group configuration
+\- Security group management
 
 \- EC2 instance deployment
 
 \- Linux server administration
 
-\- Apache web server installation
+\- Web server deployment
 
-\- Public internet connectivity verification
+\- GitHub project documentation
+
+
+
+\---
+
+
+
+\## Author
+
+
+
+Anthony Bell  
+
+Cloud \& Network Engineering Student  
+
+Western Governors University
 
